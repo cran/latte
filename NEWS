@@ -1,0 +1,22 @@
+Version 0.1.2
+-------------------------------------------------------------------------
+
+CHANGES
+
+* Better citation.
+
+Version 0.1.1
+-------------------------------------------------------------------------
+
+NEWS
+
+* CRAN genesis
+
+
+Version 0.1.0
+-------------------------------------------------------------------------
+
+FIXES
+
+* The package can now be loaded on unix-alikes without a .bash_profile,
+  .bashrc, or .profile (thanks @GrantInnerst)
