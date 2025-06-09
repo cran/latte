@@ -1,24 +1,24 @@
 #' Solve an integer progam with LattE
 #'
-#' \code{latte_max} and \code{latte_min} use LattE's \code{latte-maximize} and
-#' \code{latte-minimize} functions to find the maximum or minimum of a linear
+#' [latte_max()] and [latte_min()] use LattE's `latte-maximize` and
+#' `latte-minimize` functions to find the maximum or minimum of a linear
 #' objective function over the integers points in a polytope (i.e. satisfying
 #' linearity constraints). This makes use of the digging algorithm; see the
-#' LattE manual at \url{http://www.math.ucdavis.edu/~latte} for details.
+#' LattE manual at \url{https://www.math.ucdavis.edu/~latte/} for details.
 #'
-#' @param objective A linear polynomial to pass to [mp()], see examples
+#' @param objective A linear polynomial to pass to [mpoly::mp()], see examples
 #' @param constraints A collection of linear polynomial (in)equalities that
 #'   define the feasibility region, the integers in the polytope
-#' @param method Method \code{"LP"} or \code{"cones"}
-#' @param dir Directory to place the files in, without an ending /
+#' @param method Method `"LP"` or `"cones"`
+#' @param dir Directory to place the files in, without an ending `/`
 #' @param opts Options; see the LattE manual at
-#'   \url{http://www.math.ucdavis.edu/~latte}
+#'   \url{https://www.math.ucdavis.edu/~latte/}
 #' @param quiet Show latte output
 #' @param shell Messages the shell code used to do the computation
-#' @param type \code{"max"} or \code{"min"}
-#' @return A named list with components \code{par}, a named-vector of optimizing
-#'   arguments, and \code{value}, the value of the objective function at the
-#'   optimial point.
+#' @param type `"max"` or `"min"`
+#' @return A named list with components `par`, a named-vector of optimizing
+#'   arguments, and `value`, the value of the objective function at the optimial
+#'   point.
 #' @name latte-optim
 #' @examples
 #'
@@ -135,16 +135,21 @@ latte_optim <- function(
 
 
   ## mpoly_list_to_mat is in file count.r
-  matFull <- mpoly_list_to_mat(c(list(objective), constraints))
+  matFull <- mpoly_list_to_mat(
+  	structure(
+  		c(list(objective), constraints),
+  		class = "mpolyList"
+  	)
+  )
 
 
   ## make dir to put latte files in (within the tempdir) timestamped
-  dir.create(dir2 <- file.path(dir, timeStamp()))
+  dir.create(scratch_dir <- file.path(dir, time_stamp()))
 
 
   ## switch to temporary directory
-  oldWd <- getwd(); on.exit(setwd(oldWd), add = TRUE)
-  setwd(dir2)
+  user_working_directory <- getwd()
+  setwd(scratch_dir); on.exit(setwd(user_working_directory), add = TRUE)
 
 
   ## convert constraints to latte hrep code and write file
@@ -174,20 +179,20 @@ latte_optim <- function(
     
     system2(
       file.path(get_latte_path(), exec),
-      paste(opts, file.path(dir2, "optim_code")),
+      paste(opts, file.path(scratch_dir, "optim_code")),
       stdout = glue("optim_out"), 
       stderr = glue("optim_err")
     )
     
     # generate shell code
     shell_code <- glue(
-      "{file.path(get_latte_path(), exec)} {paste(opts, file.path(dir2, 'optim_code'))} > {exec}_out 2> {exec}_err"
+      "{file.path(get_latte_path(), exec)} {paste(opts, file.path(scratch_dir, 'optim_code'))} > {exec}_out 2> {exec}_err"
     )
     if(shell) message(shell_code)
     
   } else if(is_win()){ # windows
     
-    matFile <- file.path(dir2, "optim_code 2> out.txt")
+    matFile <- file.path(scratch_dir, "optim_code 2> out.txt")
     matFile <- chartr("\\", "/", matFile)
     matFile <- str_c("/cygdrive/c", str_sub(matFile, 3))
     system(

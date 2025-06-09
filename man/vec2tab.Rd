@@ -17,24 +17,30 @@ An array
 }
 \description{
 Convert a vector into an array given a set of dimensions; it therefore simply
-wraps \code{\link[=aperm]{aperm()}} and \code{\link[=array]{array()}}.
+wraps \code{\link[base:aperm]{base::aperm()}} and \code{\link[base:array]{base::array()}}.
 }
 \details{
 This function converts an array (or a multi-way contingency table) into a
 vector, using a consistent ordering of the cells. The ordering of the cells
-is lexicographical and cannot be specified by the user.
+is lexicographic and cannot be specified by the user.
 }
 \examples{
 
 data(Titanic)
-Titanic
-tab2vec(Titanic)
-vec2tab(tab2vec(Titanic), dim(Titanic))
-vec2tab(tab2vec(Titanic), dim(Titanic)) == Titanic
-all(vec2tab(tab2vec(Titanic), dim(Titanic)) == Titanic)
+str( Titanic )
+str( tab2vec(Titanic) )
+
+# convert it back into a table (names are removed)
+vec2tab(
+  tab2vec(Titanic), 
+  dim(Titanic)
+)
+
+# check that they are the same
+all( vec2tab(tab2vec(Titanic), dim(Titanic)) == Titanic )
 
 
 }
 \seealso{
-\code{\link[=tab2vec]{tab2vec()}}, \code{\link[=aperm]{aperm()}}, \code{\link[=array]{array()}}
+\code{\link[=tab2vec]{tab2vec()}}, \code{\link[base:aperm]{base::aperm()}}, \code{\link[base:array]{base::array()}}
 }

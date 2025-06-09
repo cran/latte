@@ -7,15 +7,15 @@ rhash <- function(n) {
 }
 # rhash(10)
 
-timeStamp <- function(){
-  timeStamp <- as.character(Sys.time())
-  timeStamp <- chartr("-", "_", timeStamp)
-  timeStamp <- chartr(" ", "_", timeStamp)
-  timeStamp <- chartr(":", "_", timeStamp)
-  timeStamp <- paste0(timeStamp, "_", rhash(10))
-  timeStamp
+time_stamp <- function(){
+  time_stamp <- as.character(Sys.time())
+  time_stamp <- chartr("-", "_", time_stamp)
+  time_stamp <- chartr(" ", "_", time_stamp)
+  time_stamp <- chartr(":", "_", time_stamp)
+  time_stamp <- paste0(time_stamp, "_", rhash(10))
+  time_stamp
 }
-
+# time_stamp()
 
 
 
@@ -44,7 +44,7 @@ is.formula <- function(x) inherits(x, "formula")
 
 is_mac <- function() grepl("darwin", R.version$platform)
 is_win <- function() .Platform$OS.type == "windows"
-is_linux <- function() (.Platform$OS.type == "unix") && (is_mac() == FALSE)
+is_linux <- function() (.Platform$OS.type == "unix") && !is_mac()
 is_unix <- function() .Platform$OS.type == "unix"
 is_solaris <- function() grepl("solaris", R.version$os)
 
